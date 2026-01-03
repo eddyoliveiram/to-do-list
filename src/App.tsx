@@ -11,63 +11,96 @@ import { Login } from '@/pages/Login'
 import { MemberSelection } from '@/pages/MemberSelection'
 import { Home } from '@/pages/Home'
 import { Dashboard } from '@/pages/Dashboard'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
   const { signOut } = useAuth()
   const { selectMember } = useMember()
   const navigate = useNavigate()
 
-  const handleSignOut = async () => {
-    if (confirm('Tem certeza que deseja sair?')) {
-      selectMember(null)
-      await signOut()
-      navigate('/login')
-    }
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true)
+  }
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutDialog(false)
+    selectMember(null)
+    await signOut()
+    navigate('/login')
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
 
-      {/* Rota de seleção de membro (após login) */}
-      <Route
-        path="/members"
-        element={
-          <ProtectedRoute>
-            <MemberSelection />
-          </ProtectedRoute>
-        }
-      />
+        {/* Rota de seleção de membro (após login) */}
+        <Route
+          path="/members"
+          element={
+            <ProtectedRoute>
+              <MemberSelection />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Rotas que requerem membro selecionado */}
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <MemberRoute>
-              <div className="min-h-screen bg-background">
-                <Header
-                  onMenuClick={() => setSidebarOpen(true)}
-                  showLogout
-                  onLogout={handleSignOut}
-                />
-                <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        {/* Rotas que requerem membro selecionado */}
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <div className="min-h-screen bg-background">
+                  <Header
+                    onMenuClick={() => setSidebarOpen(true)}
+                    showLogout
+                    onLogout={handleLogoutClick}
+                  />
+                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="min-h-[calc(100vh-4rem)]">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                  </Routes>
-                </main>
+                  <main className="min-h-[calc(100vh-4rem)]">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                    </Routes>
+                  </main>
 
-                <Navigation />
-              </div>
-            </MemberRoute>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+                  <Navigation />
+                </div>
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sair da conta</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja sair? Você precisará fazer login novamente para acessar suas tarefas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmLogout}>
+              Sair
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 

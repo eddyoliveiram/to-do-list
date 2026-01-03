@@ -12,6 +12,16 @@ import { Plus, Edit, User, Trophy, CheckCircle2, AlertCircle } from 'lucide-reac
 import { MemberModal } from '@/components/members/MemberModal'
 import { FamilyMember } from '@/types/family'
 import { Header } from '@/components/layout/Header'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 export function MemberSelection() {
   const navigate = useNavigate()
@@ -22,6 +32,7 @@ export function MemberSelection() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingMember, setEditingMember] = useState<FamilyMember | undefined>()
   const [manageMode, setManageMode] = useState(false)
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
 
   const handleSelectMember = (member: FamilyMember) => {
     selectMember(member)
@@ -38,11 +49,14 @@ export function MemberSelection() {
     setModalOpen(true)
   }
 
-  const handleSignOut = async () => {
-    if (confirm('Tem certeza que deseja sair?')) {
-      selectMember(null)
-      await signOut()
-    }
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true)
+  }
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutDialog(false)
+    selectMember(null)
+    await signOut()
   }
 
   if (loading) {
@@ -59,7 +73,7 @@ export function MemberSelection() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header Padronizado */}
-      <Header showLogout onLogout={handleSignOut} />
+      <Header showLogout onLogout={handleLogoutClick} />
 
       <div className="container max-w-4xl mx-auto px-4 py-6">
         {/* Título da Página */}
@@ -238,6 +252,24 @@ export function MemberSelection() {
               : undefined
           }
         />
+
+        {/* AlertDialog de Logout */}
+        <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sair da conta</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja sair? Você precisará fazer login novamente para acessar suas tarefas.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmLogout}>
+                Sair
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )

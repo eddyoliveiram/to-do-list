@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navigation } from './Navigation'
 import { X, LogOut, Users } from 'lucide-react'
@@ -5,6 +6,16 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 import { useMember } from '@/contexts/MemberContext'
 import { useNavigate } from 'react-router-dom'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface SidebarProps {
   isOpen: boolean
@@ -12,17 +23,21 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
   const { signOut } = useAuth()
   const { selectMember } = useMember()
   const navigate = useNavigate()
 
-  const handleSignOut = async () => {
-    if (confirm('Tem certeza que deseja sair?')) {
-      selectMember(null)
-      await signOut()
-      navigate('/login')
-      onClose()
-    }
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true)
+  }
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutDialog(false)
+    selectMember(null)
+    await signOut()
+    navigate('/login')
+    onClose()
   }
 
   const handleChangeMembers = () => {
@@ -70,13 +85,30 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Button
                 variant="outline"
                 className="w-full justify-start gap-3"
-                onClick={handleSignOut}
+                onClick={handleLogoutClick}
               >
                 <LogOut className="w-5 h-5" />
                 <span>Sair da Conta</span>
               </Button>
             </div>
           </motion.aside>
+
+          <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Sair da conta</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tem certeza que deseja sair? Você precisará fazer login novamente para acessar suas tarefas.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleConfirmLogout}>
+                  Sair
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </>
       )}
     </AnimatePresence>
