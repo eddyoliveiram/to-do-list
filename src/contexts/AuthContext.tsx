@@ -41,10 +41,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Escutar mudanças na autenticação
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth state changed:', event)
+      console.log('👤 Session:', session?.user?.email || 'Nenhuma sessão')
+
       setSession(session)
       setUser(session?.user ?? null)
+
       if (session?.user) {
+        console.log('📝 Dados do usuário do Google:', {
+          id: session.user.id,
+          email: session.user.email,
+          user_metadata: session.user.user_metadata,
+        })
         fetchProfile(session.user.id)
       } else {
         setProfile(null)
@@ -57,16 +66,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('🔍 Buscando perfil para userId:', userId)
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Erro ao buscar perfil:', error)
+        console.log('ℹ️ Isso pode significar que o perfil ainda não foi criado')
+        console.log('ℹ️ Execute o script diagnose-and-fix-auth.sql no Supabase')
+        throw error
+      }
+
+      console.log('✅ Perfil encontrado:', data)
       setProfile(data)
     } catch (error) {
-      console.error('Erro ao buscar perfil:', error)
+      console.error('❌ Erro ao buscar perfil:', error)
+      console.log('⚠️ Usuário autenticado mas sem perfil na tabela profiles')
+      console.log('⚠️ Execute: diagnose-and-fix-auth.sql no Supabase SQL Editor')
     } finally {
       setLoading(false)
     }

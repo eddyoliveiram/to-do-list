@@ -1,23 +1,23 @@
-import { Sun, Moon, Menu } from 'lucide-react'
+import { Sun, Moon, Menu, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/hooks/useTheme'
 
 interface HeaderProps {
   onMenuClick?: () => void
+  showLogout?: boolean
+  onLogout?: () => void
 }
 
-export function Header({ onMenuClick }: HeaderProps) {
+export function Header({ onMenuClick, showLogout, onLogout }: HeaderProps) {
   const { theme, setTheme } = useTheme()
 
   const toggleTheme = () => {
-    if (theme === 'light') setTheme('dark')
-    else if (theme === 'dark') setTheme('system')
-    else setTheme('light')
+    setTheme(theme === 'light' ? 'dark' : 'light')
   }
 
   const getThemeIcon = () => {
-    if (theme === 'dark') return <Moon className="w-5 h-5" />
-    return <Sun className="w-5 h-5" />
+    if (theme === 'light') return <Sun className="w-5 h-5" />
+    return <Moon className="w-5 h-5" />
   }
 
   return (
@@ -42,14 +42,26 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleTheme}
-          title={`Tema: ${theme === 'light' ? 'Claro' : theme === 'dark' ? 'Escuro' : 'Sistema'}`}
-        >
-          {getThemeIcon()}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            title={theme === 'light' ? 'Alternar para tema escuro' : 'Alternar para tema claro'}
+          >
+            {getThemeIcon()}
+          </Button>
+          {showLogout && onLogout && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onLogout}
+              title="Sair da conta"
+            >
+              <LogOut className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   )

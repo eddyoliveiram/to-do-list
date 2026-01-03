@@ -4,7 +4,6 @@ import { useProductivity } from '@/hooks/useProductivity'
 import { HeatMap } from '@/components/dashboard/HeatMap'
 import { StreakCard } from '@/components/dashboard/StreakCard'
 import { StatsCard } from '@/components/stats/StatsCard'
-import { ProgressChart } from '@/components/stats/ProgressChart'
 import { BarChart3, CheckCircle2, Clock, Zap } from 'lucide-react'
 
 export function Dashboard() {
@@ -67,14 +66,9 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Streak and Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-1">
-          <StreakCard metrics={productivityMetrics} />
-        </div>
-        <div className="lg:col-span-2">
-          <ProgressChart statistics={statistics} />
-        </div>
+      {/* Streak Card */}
+      <div className="mb-6">
+        <StreakCard metrics={productivityMetrics} />
       </div>
 
       {/* Heat Map */}
@@ -87,17 +81,17 @@ export function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="mt-6 p-6 rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20"
+        className="mb-8 p-6 rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20"
       >
-        <div className="flex items-start gap-4">
-          <div className="text-4xl">
+        <div className="flex flex-col md:flex-row items-start gap-4">
+          <div className="text-4xl md:text-5xl shrink-0">
             {getMotivationalEmoji(productivityMetrics.currentStreak, statistics.completionRate)}
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold mb-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg md:text-xl font-semibold mb-2">
               {getMotivationalTitle(productivityMetrics.currentStreak, statistics.completionRate)}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               {getMotivationalMessage(productivityMetrics.currentStreak, statistics.completionRate, statistics.pending)}
             </p>
           </div>

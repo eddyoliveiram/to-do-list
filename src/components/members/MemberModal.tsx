@@ -61,7 +61,7 @@ export function MemberModal({ open, onOpenChange, member, onSave, onDelete }: Me
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {member ? 'Editar Membro' : 'Adicionar Membro'}
+            {member ? 'Editar Pessoa' : 'Adicionar Pessoa'}
           </DialogTitle>
         </DialogHeader>
 
@@ -109,7 +109,7 @@ export function MemberModal({ open, onOpenChange, member, onSave, onDelete }: Me
               </span>
             </div>
             <div>
-              <p className="font-semibold">{name || 'Nome do membro'}</p>
+              <p className="font-semibold">{name || 'Nome da pessoa'}</p>
               <p className="text-sm text-muted-foreground">Visualização</p>
             </div>
           </div>

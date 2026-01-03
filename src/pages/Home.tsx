@@ -2,20 +2,17 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTasksDb } from '@/hooks/useTasksDb'
-import { useAuth } from '@/contexts/AuthContext'
 import { useMember } from '@/contexts/MemberContext'
 import { Task } from '@/types'
 import { TaskModal } from '@/components/tasks/TaskModal'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskFilters } from '@/components/tasks/TaskFilters'
 import { Button } from '@/components/ui/button'
-import { Plus, LogOut, ArrowLeft } from 'lucide-react'
-import { getGreeting } from '@/lib/utils'
+import { Plus, ArrowLeft } from 'lucide-react'
 
 export function Home() {
   const navigate = useNavigate()
-  const { signOut } = useAuth()
-  const { selectedMember, selectMember } = useMember()
+  const { selectedMember } = useMember()
   const {
     tasks,
     filter,
@@ -34,13 +31,6 @@ export function Home() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | undefined>()
-
-  const handleSignOut = async () => {
-    if (confirm('Tem certeza que deseja sair?')) {
-      selectMember(null)
-      await signOut()
-    }
-  }
 
   const handleBackToMembers = () => {
     navigate('/members')
@@ -98,47 +88,34 @@ export function Home() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleBackToMembers}
-              title="Voltar para seleção de membros"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: selectedMember?.color || '#3b82f6' }}
-            >
-              {selectedMember?.avatar_url ? (
-                <img
-                  src={selectedMember.avatar_url}
-                  alt={selectedMember.name}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-xl font-bold text-white">
-                  {selectedMember?.name.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">{getGreeting()}!</h2>
-              <p className="text-sm text-muted-foreground">
-                Tarefas de {selectedMember?.name}
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-3 mb-4">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            onClick={handleSignOut}
-            title="Sair da conta"
+            onClick={handleBackToMembers}
+            title="Voltar para seleção de membros"
           >
-            <LogOut className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" />
           </Button>
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: selectedMember?.color || '#3b82f6' }}
+          >
+            {selectedMember?.avatar_url ? (
+              <img
+                src={selectedMember.avatar_url}
+                alt={selectedMember.name}
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-xl font-bold text-white">
+                {selectedMember?.name.charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold">Tarefas de {selectedMember?.name}</h2>
+          </div>
         </div>
         <p className="text-muted-foreground">
           Você tem {statistics.pending} tarefa{statistics.pending !== 1 ? 's' : ''} pendente

@@ -8,13 +8,14 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Edit, LogOut, User, Trophy, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Plus, Edit, User, Trophy, CheckCircle2, AlertCircle } from 'lucide-react'
 import { MemberModal } from '@/components/members/MemberModal'
 import { FamilyMember } from '@/types/family'
+import { Header } from '@/components/layout/Header'
 
 export function MemberSelection() {
   const navigate = useNavigate()
-  const { profile, signOut } = useAuth()
+  const { signOut } = useAuth()
   const { members, loading, addMember, updateMember, deleteMember } = useMembers()
   const { stats, topMemberId, loading: statsLoading } = useMemberStats()
   const { selectMember } = useMember()
@@ -57,46 +58,17 @@ export function MemberSelection() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header Padronizado */}
+      <Header showLogout onLogout={handleSignOut} />
+
       <div className="container max-w-4xl mx-auto px-4 py-6">
-        {/* Header */}
+        {/* Título da Página */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.full_name || 'Avatar'}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <User className="w-6 h-6 text-primary-foreground" />
-                )}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Gerenciador de Tarefas</h1>
-                <p className="text-sm text-muted-foreground">
-                  {profile?.full_name || profile?.email}
-                </p>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleSignOut}
-              title="Sair da conta"
-            >
-              <LogOut className="w-5 h-5" />
-            </Button>
-          </div>
-          <h2 className="text-xl font-semibold mb-2">
-            Selecione um membro da família
-          </h2>
-          <p className="text-muted-foreground">
+          <p className="text-lg text-muted-foreground">
             Escolha para quem você deseja visualizar ou gerenciar tarefas
           </p>
         </motion.div>
@@ -111,13 +83,13 @@ export function MemberSelection() {
             <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-secondary flex items-center justify-center">
               <User className="w-12 h-12 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Nenhum membro cadastrado</h3>
+            <h3 className="text-lg font-semibold mb-2">Nenhuma pessoa cadastrada</h3>
             <p className="text-muted-foreground mb-6">
-              Adicione membros da família para começar a organizar tarefas
+              Adicione pessoas para começar a organizar tarefas
             </p>
             <Button onClick={handleAddMember} size="lg" className="gap-2">
               <Plus className="w-5 h-5" />
-              Adicionar Primeiro Membro
+              Adicionar Pessoa
             </Button>
           </motion.div>
         ) : (
@@ -225,7 +197,7 @@ export function MemberSelection() {
                 className="gap-2"
               >
                 <Plus className="w-5 h-5" />
-                Adicionar Membro
+                Adicionar Pessoa
               </Button>
               <Button
                 onClick={() => setManageMode(!manageMode)}
