@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { CheckCircle2, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 export function Login() {
   const { user, loading, signInWithGoogle } = useAuth()
