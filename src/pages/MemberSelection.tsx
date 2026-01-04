@@ -132,8 +132,8 @@ export function MemberSelection() {
 
                       <div className="flex flex-col items-center text-center">
                         <div
-                          className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative"
-                          style={{ backgroundColor: member.color }}
+                          className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative overflow-hidden"
+                          style={{ backgroundColor: member.avatar_url ? 'transparent' : member.color }}
                         >
                           {member.avatar_url ? (
                             <img

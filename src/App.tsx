@@ -43,6 +43,7 @@ function AppContent() {
   return (
     <>
       <Routes>
+        {/* Rotas públicas */}
         <Route path="/login" element={<Login />} />
 
         {/* Rota de seleção de membro (após login) */}
@@ -55,9 +56,9 @@ function AppContent() {
           }
         />
 
-        {/* Rotas que requerem membro selecionado */}
+        {/* Rota principal - Home */}
         <Route
-          path="/*"
+          path="/"
           element={
             <ProtectedRoute>
               <MemberRoute>
@@ -68,14 +69,32 @@ function AppContent() {
                     onLogout={handleLogoutClick}
                   />
                   <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
                   <main className="min-h-[calc(100vh-4rem)]">
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                    </Routes>
+                    <Home />
                   </main>
+                  <Navigation />
+                </div>
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
 
+        {/* Rota Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <div className="min-h-screen bg-background">
+                  <Header
+                    onMenuClick={() => setSidebarOpen(true)}
+                    showLogout
+                    onLogout={handleLogoutClick}
+                  />
+                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+                  <main className="min-h-[calc(100vh-4rem)]">
+                    <Dashboard />
+                  </main>
                   <Navigation />
                 </div>
               </MemberRoute>
